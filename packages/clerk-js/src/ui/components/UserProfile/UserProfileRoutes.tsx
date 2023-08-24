@@ -2,9 +2,11 @@ import { ProfileCardContent } from '../../elements';
 import { Route, Switch } from '../../router';
 import type { PropsOfComponent } from '../../styledSystem';
 import { ConnectedAccountsPage } from './ConnectedAccountsPage';
+import { DeletePage } from './DeletePage';
 import { EmailPage } from './EmailPage';
 import { MfaBackupCodeCreatePage } from './MfaBackupCodeCreatePage';
 import { MfaPage } from './MfaPage';
+import { MountCustomPage } from './MountCustomPage';
 import { PasswordPage } from './PasswordPage';
 import { PhonePage } from './PhonePage';
 import { ProfilePage } from './ProfilePage';
@@ -19,9 +21,8 @@ import {
 import { RootPage } from './RootPage';
 import { UsernamePage } from './UsernamePage';
 import { Web3Page } from './Web3Page';
-import { DeletePage } from './DeletePage';
 
-export const UserProfileRoutes = (props: PropsOfComponent<typeof ProfileCardContent>) => {
+export const UserProfileRoutes = (props: PropsOfComponent<typeof ProfileCardContent> & { customPages?: any[] }) => {
   return (
     <ProfileCardContent contentRef={props.contentRef}>
       <Route index>
@@ -106,6 +107,24 @@ export const UserProfileRoutes = (props: PropsOfComponent<typeof ProfileCardCont
       <Route path='delete'>
         <DeletePage />
       </Route>
+      {/* CustomPage*/}
+      {props.customPages?.map(customPage => (
+        <Route
+          path={customPage.path}
+          key={customPage.id}
+        >
+          <MountCustomPage
+            mountCustomPage={customPage.mount}
+            unmountCustomPage={customPage.unmount}
+          />
+        </Route>
+      ))}
+      {/*<Route path='custom'>*/}
+      {/*  <MountCustomPage*/}
+      {/*    unmountCustomPage={props.unmountCustomPage}*/}
+      {/*    mountCustomPage={props.mountCustomPage}*/}
+      {/*  />*/}
+      {/*</Route>*/}
     </ProfileCardContent>
   );
 };

@@ -8,9 +8,10 @@ import type {
   UserButtonProps,
   UserProfileProps,
 } from '@clerk/types';
-import React from 'react';
+import React, { createElement } from 'react';
 
 import type { MountProps, WithClerkProp } from '../types';
+import { useCustomPageMounter } from '../utils';
 import { withClerk } from './withClerk';
 
 // README: <Portal/> should be a class pure component in order for mount and unmount
@@ -63,7 +64,13 @@ class Portal extends React.PureComponent<MountProps, {}> {
   }
 
   render() {
-    return <div ref={this.portalRef} />;
+    // const Wrapper = this.props.customPages;
+    return (
+      <>
+        <div ref={this.portalRef} />
+        {this.props?.customPages?.map(customPage => createElement(customPage.Wrapper, { key: customPage.id }))}
+      </>
+    );
   }
 }
 
@@ -89,24 +96,42 @@ export const SignUp = withClerk(({ clerk, ...props }: WithClerkProp<SignUpProps>
   );
 }, 'SignUp');
 
-export const UserProfile = withClerk(({ clerk, ...props }: WithClerkProp<UserProfileProps>) => {
-  return (
-    <Portal
-      mount={clerk.mountUserProfile}
-      unmount={clerk.unmountUserProfile}
-      updateProps={(clerk as any).__unstable__updateProps}
-      props={props}
-    />
-  );
-}, 'UserProfile');
+export const UserProfile = withClerk(
+  ({ clerk, ...props }: WithClerkProp<UserProfileProps & { customPages?: any[] }>) => {
+    const customPages = props?.customPages?.map((customPage, index) => ({
+      ...customPage,
+      ...useCustomPageMounter(customPage.component),
+      id: `custom-${index}`,
+    }));
+    // const [CustomPageWrapper, mountCustomPage, unmountCustomPage] = useCustomPageMounter(props.customPage);
+    return (
+      <Portal
+        mount={clerk.mountUserProfile}
+        unmount={clerk.unmountUserProfile}
+        updateProps={(clerk as any).__unstable__updateProps}
+        props={{ ...props, customPages }}
+        customPages={customPages}
+      />
+    );
+  },
+  'UserProfile',
+);
 
 export const UserButton = withClerk(({ clerk, ...props }: WithClerkProp<UserButtonProps>) => {
+  // @ts-ignore
+  props.userProfileProps.customPages = props?.userProfileProps?.customPages?.map((customPage, index) => ({
+    ...customPage,
+    ...useCustomPageMounter(customPage.component),
+    id: `custom-${index}`,
+  }));
   return (
     <Portal
       mount={clerk.mountUserButton}
       unmount={clerk.unmountUserButton}
       updateProps={(clerk as any).__unstable__updateProps}
-      props={props}
+      props={{ ...props }}
+      // @ts-ignore
+      customPages={props?.userProfileProps?.customPages}
     />
   );
 }, 'UserButton');

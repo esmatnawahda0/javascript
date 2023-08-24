@@ -2,8 +2,12 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import styles from '../styles/Home.module.css';
+import { CustomPageComponent } from './CustomPageComponent';
+import { useClerk } from '@clerk/nextjs';
+import React from 'react';
 
 const Home: NextPage = () => {
+  const { openUserProfile } = useClerk();
   return (
     <div className={styles.container}>
       <Head>
@@ -46,7 +50,21 @@ const Home: NextPage = () => {
           <li>
             <Link href={'/user-examples'}>User examples</Link>
           </li>
+          <li>
+            <button
+              onClick={() =>
+                openUserProfile({
+                  customPages: [{ name: 'Custom Page', path: 'custom', component: <CustomPageComponent /> }],
+                })
+              }
+            >
+              Open user profile modal
+            </button>
+          </li>
         </ul>
+        <div>
+          <CustomPageComponent />
+        </div>
       </main>
     </div>
   );

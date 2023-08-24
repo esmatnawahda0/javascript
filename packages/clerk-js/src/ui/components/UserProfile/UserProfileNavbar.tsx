@@ -22,12 +22,21 @@ const userProfileRoutes: NavbarRoute[] = [
 ];
 
 export const UserProfileNavbar = (
-  props: React.PropsWithChildren<Pick<PropsOfComponent<typeof NavBar>, 'contentRef'>>,
+  props: React.PropsWithChildren<Pick<PropsOfComponent<typeof NavBar>, 'contentRef'>> & { customPagesRoutes?: any[] },
 ) => {
   return (
     <NavbarContextProvider>
       <NavBar
-        routes={userProfileRoutes}
+        routes={[
+          ...userProfileRoutes,
+          ...(props?.customPagesRoutes ?? []),
+          // {
+          //   name: 'Custom Page' as any,
+          //   id: 'custom',
+          //   icon: User,
+          //   path: 'custom',
+          // },
+        ]}
         contentRef={props.contentRef}
       />
       {props.children}

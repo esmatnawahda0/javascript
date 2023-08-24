@@ -94,7 +94,7 @@ export type ProfileSectionId =
   | 'organizationDomains';
 export type ProfilePageId = 'account' | 'security' | 'organizationSettings' | 'organizationMembers';
 
-export type NavbarItemId = 'account' | 'security' | 'members' | 'settings';
+export type NavbarItemId = 'account' | 'security' | 'members' | 'settings' | 'custom';
 
 export type UserPreviewId = 'userButton' | 'personalWorkspace';
 export type OrganizationPreviewId = 'organizationSwitcher' | 'organizationList';
