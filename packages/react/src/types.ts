@@ -48,7 +48,7 @@ export interface MountProps {
   unmount: (node: HTMLDivElement) => void;
   updateProps: (props: any) => void;
   props?: any;
-  customPages?: any[];
+  customPagesPortals?: any[];
 }
 
 export interface HeadlessBrowserClerk extends Clerk {

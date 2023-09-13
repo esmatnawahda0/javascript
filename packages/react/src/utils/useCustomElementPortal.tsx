@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 // the given component into a given node
 
 // TODO: This function needs to accept an array of components, or else it errors when changing the array length
-export const useCustomPageMounter = (component: JSX.Element) => {
+export const useCustomElementPortal = (component: JSX.Element) => {
   const [node, setNode] = useState<Element | null>(null);
 
   const mount = (node: Element) => {
@@ -19,7 +19,7 @@ export const useCustomPageMounter = (component: JSX.Element) => {
   // into the passed node
 
   // Otherwise, Wrapper returns nothing
-  const Wrapper = () => <>{node ? createPortal(component, node) : null}</>;
+  const CustomElementPortal = () => <>{node ? createPortal(component, node) : null}</>;
 
-  return { Wrapper, mount, unmount };
+  return { CustomElementPortal, mount, unmount };
 };

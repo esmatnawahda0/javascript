@@ -27,10 +27,11 @@ export const NavbarContextProvider = (props: React.PropsWithChildren<Record<neve
 };
 
 export type NavbarRoute = {
-  name: LocalizationKey;
-  id: NavbarItemId;
+  name: LocalizationKey | string;
+  id: string;
   icon: React.ComponentType;
   path: string;
+  externalNavigate?: () => void;
 };
 type RouteId = NavbarRoute['id'];
 type NavBarProps = {
@@ -49,6 +50,14 @@ export const NavBar = (props: NavBarProps) => {
   const { navigateToFlowStart } = useNavigateToFlowStart();
   const { t } = useLocalizations();
   const router = useRouter();
+
+  const handleNavigate = (route: NavbarRoute) => {
+    if (route?.externalNavigate) {
+      return () => route.externalNavigate?.();
+    } else {
+      return () => navigateAndScroll(route);
+    }
+  };
 
   const navigateAndScroll = async (route: NavbarRoute) => {
     if (contentRef.current) {
@@ -128,7 +137,7 @@ export const NavBar = (props: NavBarProps) => {
           elementId={descriptors.navbarButton.setId(r.id as any)}
           iconElementDescriptor={descriptors.navbarButtonIcon}
           iconElementId={descriptors.navbarButtonIcon.setId(r.id) as any}
-          onClick={() => navigateAndScroll(r)}
+          onClick={handleNavigate(r)}
           icon={r.icon}
           isActive={activeId === r.id}
         >

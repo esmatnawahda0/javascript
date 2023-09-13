@@ -5,14 +5,15 @@ import { withRedirectToHomeUserGuard } from '../../common';
 import { ComponentContext, withCoreUserGuard } from '../../contexts';
 import { Flow } from '../../customizables';
 import { ProfileCard, withCardStateProvider } from '../../elements';
-import { User } from '../../icons';
-import { Route, Switch } from '../../router';
+import { Route, Switch, useRouter } from '../../router';
 import type { UserProfileCtx } from '../../types';
+import { createUserProfileCustomPages } from './createUserProfileCustomPages';
 import { UserProfileNavbar } from './UserProfileNavbar';
 import { UserProfileRoutes } from './UserProfileRoutes';
 import { VerificationSuccessPage } from './VerifyWithLink';
 
 const _UserProfile = (props: UserProfileProps) => {
+  const { navigate } = useRouter();
   return (
     <Flow.Root flow='userProfile'>
       <Flow.Part>
@@ -22,7 +23,10 @@ const _UserProfile = (props: UserProfileProps) => {
             <VerificationSuccessPage />
           </Route>
           <Route>
-            <AuthenticatedRoutes customPages={props.customPages} />
+            <AuthenticatedRoutes
+              customPages={props.customPages}
+              externalNavigate={navigate}
+            />
           </Route>
         </Switch>
       </Flow.Part>
@@ -32,21 +36,26 @@ const _UserProfile = (props: UserProfileProps) => {
 
 const AuthenticatedRoutes = withCoreUserGuard((props: any) => {
   const contentRef = React.useRef<HTMLDivElement>(null);
-  const customPagesRoutes = props.customPages?.map((customPage: any) => ({
-    name: customPage.name,
-    id: customPage.id,
-    icon: User,
-    path: `${customPage.path}`,
-  }));
+  // const customPagesRoutes = props.customPages?.map((customPage: any) => ({
+  //   name: customPage.name,
+  //   id: customPage.id,
+  //   icon: User,
+  //   path: `${customPage.path}`,
+  // }));
+  const customPages = props.customPages || [];
+  const { userProfileRoutes, userProfileCustomPages } = createUserProfileCustomPages(
+    customPages || [],
+    props.externalNavigate,
+  );
   return (
     <ProfileCard sx={{ height: '100%' }}>
       <UserProfileNavbar
         contentRef={contentRef}
-        customPagesRoutes={customPagesRoutes}
+        userProfileRoutes={userProfileRoutes}
       >
         <UserProfileRoutes
           contentRef={contentRef}
-          customPages={props.customPages}
+          userProfileCustomPages={userProfileCustomPages}
         />
       </UserProfileNavbar>
     </ProfileCard>

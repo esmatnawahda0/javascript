@@ -2,11 +2,12 @@ import { ProfileCardContent } from '../../elements';
 import { Route, Switch } from '../../router';
 import type { PropsOfComponent } from '../../styledSystem';
 import { ConnectedAccountsPage } from './ConnectedAccountsPage';
+import type { UserProfileCustomPage } from './createUserProfileCustomPages';
 import { DeletePage } from './DeletePage';
 import { EmailPage } from './EmailPage';
+import { ExternalElementMounter } from './ExternalElementMounter';
 import { MfaBackupCodeCreatePage } from './MfaBackupCodeCreatePage';
 import { MfaPage } from './MfaPage';
-import { MountCustomPage } from './MountCustomPage';
 import { PasswordPage } from './PasswordPage';
 import { PhonePage } from './PhonePage';
 import { ProfilePage } from './ProfilePage';
@@ -22,7 +23,9 @@ import { RootPage } from './RootPage';
 import { UsernamePage } from './UsernamePage';
 import { Web3Page } from './Web3Page';
 
-export const UserProfileRoutes = (props: PropsOfComponent<typeof ProfileCardContent> & { customPages?: any[] }) => {
+export const UserProfileRoutes = (
+  props: PropsOfComponent<typeof ProfileCardContent> & { userProfileCustomPages?: UserProfileCustomPage[] },
+) => {
   return (
     <ProfileCardContent contentRef={props.contentRef}>
       <Route index>
@@ -108,23 +111,17 @@ export const UserProfileRoutes = (props: PropsOfComponent<typeof ProfileCardCont
         <DeletePage />
       </Route>
       {/* CustomPage*/}
-      {props.customPages?.map(customPage => (
+      {props.userProfileCustomPages?.map((customPage, index) => (
         <Route
-          path={customPage.path}
-          key={customPage.id}
+          path={customPage.url}
+          key={`custom-page-${index}`}
         >
-          <MountCustomPage
-            mountCustomPage={customPage.mount}
-            unmountCustomPage={customPage.unmount}
+          <ExternalElementMounter
+            mount={customPage.mount}
+            unmount={customPage.unmount}
           />
         </Route>
       ))}
-      {/*<Route path='custom'>*/}
-      {/*  <MountCustomPage*/}
-      {/*    unmountCustomPage={props.unmountCustomPage}*/}
-      {/*    mountCustomPage={props.mountCustomPage}*/}
-      {/*  />*/}
-      {/*</Route>*/}
     </ProfileCardContent>
   );
 };
