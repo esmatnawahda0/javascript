@@ -74,7 +74,7 @@ class Portal extends React.PureComponent<MountProps, {}> {
   }
 }
 
-const SignIn = withClerk(({ clerk, ...props }: WithClerkProp<SignInProps>) => {
+export const SignIn = withClerk(({ clerk, ...props }: WithClerkProp<SignInProps>) => {
   return (
     <Portal
       mount={clerk.mountSignIn}
@@ -85,7 +85,7 @@ const SignIn = withClerk(({ clerk, ...props }: WithClerkProp<SignInProps>) => {
   );
 }, 'SignIn');
 
-const SignUp = withClerk(({ clerk, ...props }: WithClerkProp<SignUpProps>) => {
+export const SignUp = withClerk(({ clerk, ...props }: WithClerkProp<SignUpProps>) => {
   return (
     <Portal
       mount={clerk.mountSignUp}
@@ -96,17 +96,17 @@ const SignUp = withClerk(({ clerk, ...props }: WithClerkProp<SignUpProps>) => {
   );
 }, 'SignUp');
 
-const UserProfilePage = () => {
+const UserProfilePage = ({ children }: PropsWithChildren) => {
   console.error('text for misuse of UserProfile.Page');
-  return null;
+  return <>{children}</>;
 };
 
-const UserProfileLink = () => {
+const UserProfileLink = ({ children }: PropsWithChildren) => {
   console.error('text for misuse of UserProfile.Link');
-  return null;
+  return <>{children}</>;
 };
 
-const UserProfile = withClerk(({ clerk, ...props }: WithClerkProp<PropsWithChildren<UserProfileProps>>) => {
+const _UserProfile = withClerk(({ clerk, ...props }: WithClerkProp<PropsWithChildren<UserProfileProps>>) => {
   const { customPages, customPagesPortals } = useCustomPages(props.children);
   return (
     <Portal
@@ -119,10 +119,18 @@ const UserProfile = withClerk(({ clerk, ...props }: WithClerkProp<PropsWithChild
   );
 }, 'UserProfile');
 
-(UserProfile as any).Page = UserProfilePage;
-(UserProfile as any).Link = UserProfileLink;
+// UserProfile.Page = UserProfilePage;
+// UserProfile.Link = UserProfileLink;
+type UserProfileExportType = typeof _UserProfile & {
+  Page: ({ children }: PropsWithChildren) => React.JSX.Element;
+  Link: ({ children }: PropsWithChildren) => React.JSX.Element;
+};
+export const UserProfile: UserProfileExportType = Object.assign(_UserProfile, {
+  Page: UserProfilePage,
+  Link: UserProfileLink,
+});
 
-const UserButton = withClerk(({ clerk, ...props }: WithClerkProp<UserButtonProps>) => {
+export const UserButton = withClerk(({ clerk, ...props }: WithClerkProp<UserButtonProps>) => {
   // @ts-ignore
   // props.userProfileProps.customPages = props?.userProfileProps?.customPages?.map((customPage, index) => ({
   //   ...customPage,
@@ -141,7 +149,7 @@ const UserButton = withClerk(({ clerk, ...props }: WithClerkProp<UserButtonProps
   );
 }, 'UserButton');
 
-const OrganizationProfile = withClerk(({ clerk, ...props }: WithClerkProp<OrganizationProfileProps>) => {
+export const OrganizationProfile = withClerk(({ clerk, ...props }: WithClerkProp<OrganizationProfileProps>) => {
   return (
     <Portal
       mount={clerk.mountOrganizationProfile}
@@ -152,7 +160,7 @@ const OrganizationProfile = withClerk(({ clerk, ...props }: WithClerkProp<Organi
   );
 }, 'OrganizationProfile');
 
-const CreateOrganization = withClerk(({ clerk, ...props }: WithClerkProp<CreateOrganizationProps>) => {
+export const CreateOrganization = withClerk(({ clerk, ...props }: WithClerkProp<CreateOrganizationProps>) => {
   return (
     <Portal
       mount={clerk.mountCreateOrganization}
@@ -163,7 +171,7 @@ const CreateOrganization = withClerk(({ clerk, ...props }: WithClerkProp<CreateO
   );
 }, 'CreateOrganization');
 
-const OrganizationSwitcher = withClerk(({ clerk, ...props }: WithClerkProp<OrganizationSwitcherProps>) => {
+export const OrganizationSwitcher = withClerk(({ clerk, ...props }: WithClerkProp<OrganizationSwitcherProps>) => {
   return (
     <Portal
       mount={clerk.mountOrganizationSwitcher}
@@ -174,7 +182,7 @@ const OrganizationSwitcher = withClerk(({ clerk, ...props }: WithClerkProp<Organ
   );
 }, 'OrganizationSwitcher');
 
-const OrganizationList = withClerk(({ clerk, ...props }: WithClerkProp<OrganizationListProps>) => {
+export const OrganizationList = withClerk(({ clerk, ...props }: WithClerkProp<OrganizationListProps>) => {
   return (
     <Portal
       mount={clerk.mountOrganizationList}
@@ -184,14 +192,3 @@ const OrganizationList = withClerk(({ clerk, ...props }: WithClerkProp<Organizat
     />
   );
 }, 'OrganizationList');
-
-export {
-  SignIn,
-  SignUp,
-  UserProfile,
-  UserButton,
-  OrganizationProfile,
-  CreateOrganization,
-  OrganizationSwitcher,
-  OrganizationList,
-};

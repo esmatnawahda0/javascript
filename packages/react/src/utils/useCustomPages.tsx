@@ -5,10 +5,10 @@ import { useCustomElementPortal } from './useCustomElementPortal';
 type CustomPage = {
   label: string;
   url?: string;
-  mountIcon?: (node: Element) => void;
-  unmountIcon?: () => void;
-  mount?: (node: Element) => void;
-  unmount?: () => void;
+  mountIcon?: (el: HTMLDivElement) => void;
+  unmountIcon?: (el?: HTMLDivElement) => void;
+  mount?: (el: HTMLDivElement) => void;
+  unmount?: (el?: HTMLDivElement) => void;
 };
 
 const errorInDevMode = (message: string) => {
@@ -37,21 +37,21 @@ export const useCustomPages = (userProfileChildren: any) => {
       } else if (isCustomPage(child.props)) {
         // this is a custom page
         const { CustomElementPortal, mount, unmount } = useCustomElementPortal(children);
-        // const {
-        //   CustomElementPortal: labelPortal,
-        //   mount: mountIcon,
-        //   unmount: unmountIcon,
-        // } = useCustomElementPortal(labelIcon);
+        const {
+          CustomElementPortal: labelPortal,
+          mount: mountIcon,
+          unmount: unmountIcon,
+        } = useCustomElementPortal(labelIcon);
         customPages.push({
           url,
           label,
-          // mountIcon,
-          // unmountIcon,
+          mountIcon,
+          unmountIcon,
           mount,
           unmount,
         });
         customPagesPortals.push(CustomElementPortal);
-        // customPagesPortals.push(labelPortal);
+        customPagesPortals.push(labelPortal);
       } else {
         errorInDevMode('text for misuse of UserProfile.Page. Wrong props.');
         return;
@@ -61,7 +61,13 @@ export const useCustomPages = (userProfileChildren: any) => {
     if (child?.type?.name === 'UserProfileLink') {
       if (isExternalLink(child.props)) {
         // This is an external link
-        customPages.push({ label, url });
+        const {
+          CustomElementPortal: labelPortal,
+          mount: mountIcon,
+          unmount: unmountIcon,
+        } = useCustomElementPortal(labelIcon);
+        customPages.push({ label, url, mountIcon, unmountIcon });
+        customPagesPortals.push(labelPortal);
       } else {
         errorInDevMode('text for misuse of UserProfile.Link. Wrong props.');
         return;

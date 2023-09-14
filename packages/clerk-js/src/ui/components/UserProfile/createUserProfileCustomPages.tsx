@@ -1,6 +1,7 @@
 import type { NavbarRoute } from '../../elements';
 import { TickShield, User } from '../../icons';
 import { localizationKeys } from '../../localization';
+import { ExternalElementMounter } from './ExternalElementMounter';
 
 const CLERK_ACCOUNT_ROUTE: NavbarRoute = {
   name: localizationKeys('userProfile.start.headerTitle__account'),
@@ -25,6 +26,8 @@ export type UserProfileCustomPage = {
 type CustomPage = {
   label: string;
   url?: string;
+  mountIcon?: (el: HTMLDivElement) => void;
+  unmountIcon?: (el?: HTMLDivElement) => void;
   mount?: (el: HTMLDivElement) => void;
   unmount?: (el?: HTMLDivElement) => void;
 };
@@ -35,31 +38,41 @@ export const createUserProfileCustomPages = (customPages: CustomPage[], navigate
   const userProfileCustomPages: UserProfileCustomPage[] = [];
 
   customPages.forEach((customPage, index: number) => {
-    const { label, url, mount, unmount } = customPage;
-    if (!url && !mount && !unmount && label === 'account') {
+    const { label, url, mount, unmount, mountIcon, unmountIcon } = customPage;
+    if (!url && !mount && !unmount && !mountIcon && !unmountIcon && label === 'account') {
       // reordering account
       routesWithoutDefaultRoutes.push(CLERK_ACCOUNT_ROUTE);
       clerkDefaultRoutes = clerkDefaultRoutes.filter(({ id }) => id !== 'account');
-    } else if (!url && !mount && !unmount && label === 'security') {
+    } else if (!url && !mount && !unmount && !mountIcon && !unmountIcon && label === 'security') {
       // reordering security
       routesWithoutDefaultRoutes.push(CLERK_SECURITY_ROUTE);
       clerkDefaultRoutes = clerkDefaultRoutes.filter(({ id }) => id !== 'security');
-    } else if (!!url && !!label && !mount && !unmount) {
+    } else if (!!url && !!label && !mount && !unmount && !!mountIcon && !!unmountIcon) {
       // external link
       routesWithoutDefaultRoutes.push({
         name: label,
         id: `custom-page-${index}`,
-        icon: User,
+        icon: () => (
+          <ExternalElementMounter
+            mount={mountIcon}
+            unmount={unmountIcon}
+          />
+        ),
         path: '',
         externalNavigate: () => navigate(url),
       });
-    } else if (!!url && !!label && !!mount && !!unmount) {
+    } else if (!!url && !!label && !!mount && !!unmount && !!mountIcon && !!unmountIcon) {
       // custom page
       userProfileCustomPages.push({ url, mount, unmount });
       routesWithoutDefaultRoutes.push({
         name: label,
         id: `custom-page-${index}`,
-        icon: User,
+        icon: () => (
+          <ExternalElementMounter
+            mount={mountIcon}
+            unmount={unmountIcon}
+          />
+        ),
         path: url,
       });
     } else {
