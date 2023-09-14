@@ -100,11 +100,13 @@ const UserProfilePage = ({ children }: PropsWithChildren<UserProfileCustomPagePr
   console.error('text for misuse of UserProfile.Page');
   return <div>{children}</div>;
 };
+UserProfilePage.displayName = 'UserProfilePage';
 
 const UserProfileLink = ({ children }: PropsWithChildren<UserProfileCustomLinkProps>) => {
   console.error('text for misuse of UserProfile.Link');
   return <div>{children}</div>;
 };
+UserProfileLink.displayName = 'UserProfileLink';
 
 const _UserProfile = withClerk(({ clerk, ...props }: WithClerkProp<PropsWithChildren<UserProfileProps>>) => {
   const { customPages, customPagesPortals } = useCustomPages(props.children);
@@ -119,8 +121,6 @@ const _UserProfile = withClerk(({ clerk, ...props }: WithClerkProp<PropsWithChil
   );
 }, 'UserProfile');
 
-// UserProfile.Page = UserProfilePage;
-// UserProfile.Link = UserProfileLink;
 type UserProfileExportType = typeof _UserProfile & {
   Page: ({ children }: PropsWithChildren<UserProfileCustomPageProps>) => React.JSX.Element;
   Link: ({ children }: PropsWithChildren<UserProfileCustomLinkProps>) => React.JSX.Element;
