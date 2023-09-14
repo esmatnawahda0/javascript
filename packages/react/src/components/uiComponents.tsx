@@ -11,8 +11,7 @@ import type {
 import type { PropsWithChildren } from 'react';
 import React, { createElement } from 'react';
 
-import type { MountProps, UserProfileCustomPageProps, WithClerkProp } from '../types';
-import type { UserProfileCustomLinkProps } from '../types';
+import type { MountProps, UserProfileCustomLinkProps, UserProfileCustomPageProps, WithClerkProp } from '../types';
 import { useCustomPages } from '../utils/useCustomPages';
 import { withClerk } from './withClerk';
 
@@ -99,12 +98,12 @@ export const SignUp = withClerk(({ clerk, ...props }: WithClerkProp<SignUpProps>
 
 const UserProfilePage = ({ children }: PropsWithChildren<UserProfileCustomPageProps>) => {
   console.error('text for misuse of UserProfile.Page');
-  return <>{children}</>;
+  return <div>{children}</div>;
 };
 
 const UserProfileLink = ({ children }: PropsWithChildren<UserProfileCustomLinkProps>) => {
   console.error('text for misuse of UserProfile.Link');
-  return <>{children}</>;
+  return <div>{children}</div>;
 };
 
 const _UserProfile = withClerk(({ clerk, ...props }: WithClerkProp<PropsWithChildren<UserProfileProps>>) => {
