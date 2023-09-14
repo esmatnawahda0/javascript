@@ -81,14 +81,19 @@ export const createUserProfileCustomPages = (customPages: CustomPage[], navigate
             unmount={unmountIcon}
           />
         ),
-        path: index === 0 ? '/' : url,
+        path: url,
       });
     } else {
       console.error('Invalid custom page data: ', customPage);
     }
   });
 
-  const userProfileRoutes = [...clerkDefaultRoutes, ...routesWithoutDefaultRoutes];
+  // Set the path of the first route to '/' if the default routes are used above
+  if (clerkDefaultRoutes.length === 0 && routesWithoutDefaultRoutes.length > 0) {
+    routesWithoutDefaultRoutes[0].path = '/';
+  }
+
+  const userProfileRoutes = [...clerkDefaultRoutes.map(r => ({ ...r, path: '/' })), ...routesWithoutDefaultRoutes];
 
   return { userProfileRoutes, userProfileCustomPages, isAccountFirst: userProfileRoutes[0].id === 'account' };
 };
