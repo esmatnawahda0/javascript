@@ -7,14 +7,14 @@ const CLERK_ACCOUNT_ROUTE: NavbarRoute = {
   name: localizationKeys('userProfile.start.headerTitle__account'),
   id: 'account',
   icon: User,
-  path: '/',
+  path: 'account',
 };
 
 const CLERK_SECURITY_ROUTE: NavbarRoute = {
   name: localizationKeys('userProfile.start.headerTitle__security'),
   id: 'security',
   icon: TickShield,
-  path: '',
+  path: 'account',
 };
 
 export type UserProfileCustomPage = {
@@ -41,11 +41,19 @@ export const createUserProfileCustomPages = (customPages: CustomPage[], navigate
     const { label, url, mount, unmount, mountIcon, unmountIcon } = customPage;
     if (!url && !mount && !unmount && !mountIcon && !unmountIcon && label === 'account') {
       // reordering account
-      routesWithoutDefaultRoutes.push(CLERK_ACCOUNT_ROUTE);
+      if (index === 0) {
+        routesWithoutDefaultRoutes.push({ ...CLERK_ACCOUNT_ROUTE, path: '/' });
+      } else {
+        routesWithoutDefaultRoutes.push(CLERK_ACCOUNT_ROUTE);
+      }
       clerkDefaultRoutes = clerkDefaultRoutes.filter(({ id }) => id !== 'account');
     } else if (!url && !mount && !unmount && !mountIcon && !unmountIcon && label === 'security') {
       // reordering security
-      routesWithoutDefaultRoutes.push(CLERK_SECURITY_ROUTE);
+      if (index === 0) {
+        routesWithoutDefaultRoutes.push({ ...CLERK_SECURITY_ROUTE, path: '/' });
+      } else {
+        routesWithoutDefaultRoutes.push(CLERK_SECURITY_ROUTE);
+      }
       clerkDefaultRoutes = clerkDefaultRoutes.filter(({ id }) => id !== 'security');
     } else if (!!url && !!label && !mount && !unmount && !!mountIcon && !!unmountIcon) {
       // external link
@@ -73,7 +81,7 @@ export const createUserProfileCustomPages = (customPages: CustomPage[], navigate
             unmount={unmountIcon}
           />
         ),
-        path: url,
+        path: index === 0 ? '/' : url,
       });
     } else {
       console.error('Invalid custom page data: ', customPage);
@@ -82,7 +90,7 @@ export const createUserProfileCustomPages = (customPages: CustomPage[], navigate
 
   const userProfileRoutes = [...clerkDefaultRoutes, ...routesWithoutDefaultRoutes];
 
-  return { userProfileRoutes, userProfileCustomPages };
+  return { userProfileRoutes, userProfileCustomPages, isAccountFirst: userProfileRoutes[0].id === 'account' };
 };
 
 export const pageToRootNavbarRouteMap = {

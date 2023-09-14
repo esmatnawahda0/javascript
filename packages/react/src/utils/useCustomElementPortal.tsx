@@ -4,7 +4,6 @@ import { createPortal } from 'react-dom';
 // This function takes a component as prop, and returns functions that mount and unmount
 // the given component into a given node
 
-// TODO: This function needs to accept an array of components, or else it errors when changing the array length
 export const useCustomElementPortal = (component: JSX.Element) => {
   const [node, setNode] = useState<Element | null>(null);
 
@@ -15,10 +14,10 @@ export const useCustomElementPortal = (component: JSX.Element) => {
     setNode(null);
   };
 
-  // If mount has been called, Wrapper returns a portal that renders `component`
+  // If mount has been called, CustomElementPortal returns a portal that renders `component`
   // into the passed node
 
-  // Otherwise, Wrapper returns nothing
+  // Otherwise, CustomElementPortal returns nothing
   const CustomElementPortal = () => <>{node ? createPortal(component, node) : null}</>;
 
   return { CustomElementPortal, mount, unmount };

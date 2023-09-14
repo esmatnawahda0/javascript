@@ -36,17 +36,13 @@ const _UserProfile = (props: UserProfileProps) => {
 
 const AuthenticatedRoutes = withCoreUserGuard((props: any) => {
   const contentRef = React.useRef<HTMLDivElement>(null);
-  // const customPagesRoutes = props.customPages?.map((customPage: any) => ({
-  //   name: customPage.name,
-  //   id: customPage.id,
-  //   icon: User,
-  //   path: `${customPage.path}`,
-  // }));
+
   const customPages = props.customPages || [];
-  const { userProfileRoutes, userProfileCustomPages } = createUserProfileCustomPages(
+  const { userProfileRoutes, userProfileCustomPages, isAccountFirst } = createUserProfileCustomPages(
     customPages || [],
     props.externalNavigate,
   );
+
   return (
     <ProfileCard sx={{ height: '100%' }}>
       <UserProfileNavbar
@@ -56,6 +52,7 @@ const AuthenticatedRoutes = withCoreUserGuard((props: any) => {
         <UserProfileRoutes
           contentRef={contentRef}
           userProfileCustomPages={userProfileCustomPages}
+          isAccountFirst={isAccountFirst}
         />
       </UserProfileNavbar>
     </ProfileCard>
