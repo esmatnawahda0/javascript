@@ -11,7 +11,8 @@ import type {
 import type { PropsWithChildren } from 'react';
 import React, { createElement } from 'react';
 
-import type { MountProps, WithClerkProp } from '../types';
+import type { MountProps, UserProfileCustomPageProps, WithClerkProp } from '../types';
+import type { UserProfileCustomLinkProps } from '../types';
 import { useCustomPages } from '../utils/useCustomPages';
 import { withClerk } from './withClerk';
 
@@ -96,12 +97,12 @@ export const SignUp = withClerk(({ clerk, ...props }: WithClerkProp<SignUpProps>
   );
 }, 'SignUp');
 
-const UserProfilePage = ({ children }: PropsWithChildren) => {
+const UserProfilePage = ({ children }: PropsWithChildren<UserProfileCustomPageProps>) => {
   console.error('text for misuse of UserProfile.Page');
   return <>{children}</>;
 };
 
-const UserProfileLink = ({ children }: PropsWithChildren) => {
+const UserProfileLink = ({ children }: PropsWithChildren<UserProfileCustomLinkProps>) => {
   console.error('text for misuse of UserProfile.Link');
   return <>{children}</>;
 };
@@ -122,8 +123,8 @@ const _UserProfile = withClerk(({ clerk, ...props }: WithClerkProp<PropsWithChil
 // UserProfile.Page = UserProfilePage;
 // UserProfile.Link = UserProfileLink;
 type UserProfileExportType = typeof _UserProfile & {
-  Page: ({ children }: PropsWithChildren) => React.JSX.Element;
-  Link: ({ children }: PropsWithChildren) => React.JSX.Element;
+  Page: ({ children }: PropsWithChildren<UserProfileCustomPageProps>) => React.JSX.Element;
+  Link: ({ children }: PropsWithChildren<UserProfileCustomLinkProps>) => React.JSX.Element;
 };
 export const UserProfile: UserProfileExportType = Object.assign(_UserProfile, {
   Page: UserProfilePage,

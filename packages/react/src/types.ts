@@ -85,3 +85,33 @@ export interface SignUpButtonProps extends ButtonProps {
 export type SignInWithMetamaskButtonProps = Pick<ButtonProps, 'redirectUrl' | 'children'>;
 
 export type RedirectToProps = RedirectOptions;
+
+export type UserProfileCustomPageProps = {
+  /*
+   * This is the path that will be used to navigate to the custom page.
+   */
+  url?: string;
+  /*
+   * This is the name that will be displayed in the navigation sidebar for the custom page
+   */
+  label: string;
+  /*
+   * This is the icon that will be displayed in the navigation sidebar for the custom page.
+   */
+  labelIcon?: React.ReactElement;
+};
+
+export type UserProfileCustomLinkProps = {
+  /*
+   * This is the path that will be used to navigate to the custom page.
+   */
+  url: string;
+  /*
+   * This is the name that will be displayed in the navigation sidebar for the custom page
+   */
+  label: string;
+  /*
+   * This is the icon that will be displayed in the navigation sidebar for the custom page.
+   */
+  labelIcon: React.ReactElement;
+};
