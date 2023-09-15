@@ -37,7 +37,7 @@ export const useCustomPages = (userProfileChildren: any) => {
     console.log('props: ', child.props);
     console.log('_owner: ', child._owner);
     console.log('typeof: ', typeof child);
-    if (!isPageComponent(child) || !isLinkComponent(child)) {
+    if (!isPageComponent(child) && !isLinkComponent(child)) {
       errorInDevMode(
         'text for only allowing UserProfile.Page and UserProfile.Link as children of UserProfile. This component will be ignored.',
       );
