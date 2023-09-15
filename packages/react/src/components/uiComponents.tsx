@@ -96,19 +96,15 @@ export const SignUp = withClerk(({ clerk, ...props }: WithClerkProp<SignUpProps>
   );
 }, 'SignUp');
 
-function UserProfilePage({ children }: PropsWithChildren<UserProfileCustomPageProps>) {
+export function UserProfilePage({ children }: PropsWithChildren<UserProfileCustomPageProps>) {
   console.error('text for misuse of UserProfile.Page');
   return <div>{children}</div>;
 }
-UserProfilePage.displayName = 'UserProfilePage';
 
-function UserProfileLink({ children }: PropsWithChildren<UserProfileCustomLinkProps>) {
+export function UserProfileLink({ children }: PropsWithChildren<UserProfileCustomLinkProps>) {
   console.error('text for misuse of UserProfile.Link');
   return <div>{children}</div>;
 }
-UserProfileLink.displayName = 'UserProfileLink';
-
-export { UserProfileLink, UserProfilePage };
 
 export const UserProfile = withClerk(({ clerk, ...props }: WithClerkProp<PropsWithChildren<UserProfileProps>>) => {
   const { customPages, customPagesPortals } = useCustomPages(props.children);

@@ -19,11 +19,11 @@ const errorInDevMode = (message: string) => {
 };
 
 const isPageComponent = (v: any): boolean => {
-  return !!v && React.isValidElement(v) && typeof v === 'object' && (v as React.ReactElement).type === UserProfilePage;
+  return !!v && React.isValidElement(v) && (v as React.ReactElement)?.type === UserProfilePage;
 };
 
 const isLinkComponent = (v: any): boolean => {
-  return !!v && React.isValidElement(v) && typeof v === 'object' && (v as React.ReactElement).type === UserProfileLink;
+  return !!v && React.isValidElement(v) && (v as React.ReactElement)?.type === UserProfileLink;
 };
 
 export const useCustomPages = (userProfileChildren: any) => {
