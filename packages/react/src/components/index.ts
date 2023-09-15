@@ -2,6 +2,8 @@ export {
   SignUp,
   SignIn,
   UserProfile,
+  UserProfilePage,
+  UserProfileLink,
   UserButton,
   OrganizationSwitcher,
   OrganizationProfile,

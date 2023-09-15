@@ -21,6 +21,8 @@ export {
 export {
   UserButton,
   UserProfile,
+  UserProfilePage,
+  UserProfileLink,
   SignUpButton,
   SignIn,
   SignUp,
