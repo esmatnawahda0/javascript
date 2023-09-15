@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { UserProfileLink, UserProfilePage } from '../components';
 import { useCustomElementPortal } from './useCustomElementPortal';
 
 type CustomPage = {
@@ -17,11 +18,19 @@ const errorInDevMode = (message: string) => {
   }
 };
 
+const isPageComponent = (v: any): boolean => {
+  return !!v && React.isValidElement(v) && typeof v === 'object' && (v as React.ReactElement).type === UserProfilePage;
+};
+
+const isLinkComponent = (v: any): boolean => {
+  return !!v && React.isValidElement(v) && typeof v === 'object' && (v as React.ReactElement).type === UserProfileLink;
+};
+
 export const useCustomPages = (userProfileChildren: any) => {
   const customPages: CustomPage[] = [];
   const customPagesPortals: React.ComponentType[] = [];
   React.Children.forEach(userProfileChildren, child => {
-    if (child?.type?.displayName !== 'UserProfilePage' && child?.type?.displayName !== 'UserProfileLink') {
+    if (!isPageComponent(child) || !isLinkComponent(child)) {
       errorInDevMode(
         'text for only allowing UserProfile.Page and UserProfile.Link as children of UserProfile. This component will be ignored.',
       );
@@ -30,7 +39,7 @@ export const useCustomPages = (userProfileChildren: any) => {
 
     const { children, label, url, labelIcon } = child.props;
 
-    if (child?.type?.name === 'UserProfilePage') {
+    if (isPageComponent(child)) {
       if (isReorderItem(child.props)) {
         // This is a reordering item
         customPages.push({ label });
@@ -58,7 +67,7 @@ export const useCustomPages = (userProfileChildren: any) => {
       }
     }
 
-    if (child?.type?.name === 'UserProfileLink') {
+    if (isLinkComponent(child)) {
       if (isExternalLink(child.props)) {
         // This is an external link
         const {

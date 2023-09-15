@@ -108,6 +108,8 @@ function UserProfileLink({ children }: PropsWithChildren<UserProfileCustomLinkPr
 }
 UserProfileLink.displayName = 'UserProfileLink';
 
+export { UserProfileLink, UserProfilePage };
+
 export const UserProfile = withClerk(({ clerk, ...props }: WithClerkProp<PropsWithChildren<UserProfileProps>>) => {
   const { customPages, customPagesPortals } = useCustomPages(props.children);
   return (
@@ -120,8 +122,6 @@ export const UserProfile = withClerk(({ clerk, ...props }: WithClerkProp<PropsWi
     />
   );
 }, 'UserProfile');
-
-export { UserProfileLink, UserProfilePage };
 
 // type UserProfileExportType = typeof _UserProfile & {
 //   Page: ({ children }: PropsWithChildren<UserProfileCustomPageProps>) => React.JSX.Element;
