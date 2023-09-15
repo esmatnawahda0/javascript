@@ -30,6 +30,8 @@ export const useCustomPages = (userProfileChildren: any) => {
   const customPages: CustomPage[] = [];
   const customPagesPortals: React.ComponentType[] = [];
   React.Children.forEach(userProfileChildren, child => {
+    console.log('keys: ', Object.keys(child));
+    console.log('getOwnPropertyNames: ', Object.getOwnPropertyNames(child));
     if (!isPageComponent(child) || !isLinkComponent(child)) {
       errorInDevMode(
         'text for only allowing UserProfile.Page and UserProfile.Link as children of UserProfile. This component will be ignored.',
