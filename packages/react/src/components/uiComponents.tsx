@@ -106,7 +106,7 @@ export function UserProfileLink({ children }: PropsWithChildren<UserProfileCusto
   return <div>{children}</div>;
 }
 
-export const UserProfile = withClerk(({ clerk, ...props }: WithClerkProp<PropsWithChildren<UserProfileProps>>) => {
+const _UserProfile = withClerk(({ clerk, ...props }: WithClerkProp<PropsWithChildren<UserProfileProps>>) => {
   const { customPages, customPagesPortals } = useCustomPages(props.children);
   return (
     <Portal
@@ -119,33 +119,37 @@ export const UserProfile = withClerk(({ clerk, ...props }: WithClerkProp<PropsWi
   );
 }, 'UserProfile');
 
-// type UserProfileExportType = typeof _UserProfile & {
-//   Page: ({ children }: PropsWithChildren<UserProfileCustomPageProps>) => React.JSX.Element;
-//   Link: ({ children }: PropsWithChildren<UserProfileCustomLinkProps>) => React.JSX.Element;
-// };
-// export const UserProfile: UserProfileExportType = Object.assign(_UserProfile, {
-//   Page: UserProfilePage,
-//   Link: UserProfileLink,
-// });
+type UserProfileExportType = typeof _UserProfile & {
+  Page: ({ children }: PropsWithChildren<UserProfileCustomPageProps>) => React.JSX.Element;
+  Link: ({ children }: PropsWithChildren<UserProfileCustomLinkProps>) => React.JSX.Element;
+};
+export const UserProfile: UserProfileExportType = Object.assign(_UserProfile, {
+  Page: UserProfilePage,
+  Link: UserProfileLink,
+});
 
-export const UserButton = withClerk(({ clerk, ...props }: WithClerkProp<UserButtonProps>) => {
-  // @ts-ignore
-  // props.userProfileProps.customPages = props?.userProfileProps?.customPages?.map((customPage, index) => ({
-  //   ...customPage,
-  //   ...useCustomPageMounter(customPage.component),
-  //   id: `custom-${index}`,
-  // }));
+const _UserButton = withClerk(({ clerk, ...props }: WithClerkProp<PropsWithChildren<UserButtonProps>>) => {
+  const { customPages, customPagesPortals } = useCustomPages(props.children);
+  const userProfileProps = Object.assign(props.userProfileProps || {}, { customPages });
   return (
     <Portal
       mount={clerk.mountUserButton}
       unmount={clerk.unmountUserButton}
       updateProps={(clerk as any).__unstable__updateProps}
-      props={{ ...props }}
-      // @ts-ignore
-      customPages={props?.userProfileProps?.customPages}
+      props={{ ...props, userProfileProps }}
+      customPagesPortals={customPagesPortals}
     />
   );
 }, 'UserButton');
+
+type UserButtonExportType = typeof _UserButton & {
+  UserProfilePage: ({ children }: PropsWithChildren<UserProfileCustomPageProps>) => React.JSX.Element;
+  UserProfileLink: ({ children }: PropsWithChildren<UserProfileCustomLinkProps>) => React.JSX.Element;
+};
+export const UserButton: UserButtonExportType = Object.assign(_UserButton, {
+  UserProfilePage: UserProfilePage,
+  UserProfileLink: UserProfileLink,
+});
 
 export const OrganizationProfile = withClerk(({ clerk, ...props }: WithClerkProp<OrganizationProfileProps>) => {
   return (
