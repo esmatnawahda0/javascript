@@ -43,7 +43,7 @@ export const ActiveMembersList = () => {
     return card
       .runAsync(async () => {
         await membership.update({ role: newRole });
-        await (adminMembers as any).unstable__mutate?.();
+        await adminMembers?.mutate?.();
       })
       .catch(err => handleError(err, [], card.setError));
   };
@@ -55,7 +55,7 @@ export const ActiveMembersList = () => {
     return card
       .runAsync(async () => {
         const destroyedMembership = membership.destroy();
-        await (adminMembers as any).unstable__mutate?.();
+        await adminMembers?.mutate?.();
         return destroyedMembership;
       })
       .then(mutateSwrState)
