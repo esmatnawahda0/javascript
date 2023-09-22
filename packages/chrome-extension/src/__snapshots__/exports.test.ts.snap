@@ -27,8 +27,6 @@ exports[`public exports should not include a breaking change 1`] = `
   "SignedOut",
   "UserButton",
   "UserProfile",
-  "UserProfileLink",
-  "UserProfilePage",
   "WithClerk",
   "WithSession",
   "WithUser",

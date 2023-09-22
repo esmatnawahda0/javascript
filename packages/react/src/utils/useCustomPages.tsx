@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { UserProfileLink, UserProfilePage } from '../components';
+import { UserProfileLink, UserProfilePage } from '../components/uiComponents';
 import { useCustomElementPortal } from './useCustomElementPortal';
 
 type CustomPage = {

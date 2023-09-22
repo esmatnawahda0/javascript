@@ -8,8 +8,6 @@ import { useClerkNextOptions } from './NextOptionsContext';
 
 export {
   UserProfile,
-  UserProfilePage,
-  UserProfileLink,
   UserButton,
   OrganizationSwitcher,
   OrganizationProfile,
