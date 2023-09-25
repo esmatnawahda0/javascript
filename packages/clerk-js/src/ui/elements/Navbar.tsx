@@ -1,5 +1,4 @@
 import { createContextAndHook, useSafeLayoutEffect } from '@clerk/shared';
-import type { NavbarItemId } from '@clerk/types';
 import React, { useEffect } from 'react';
 
 import type { LocalizationKey } from '../customizables';
@@ -44,7 +43,7 @@ const getSectionId = (id: RouteId) => `#cl-section-${id}`;
 
 export const NavBar = (props: NavBarProps) => {
   const { contentRef, routes, header } = props;
-  const [activeId, setActiveId] = React.useState<RouteId>(routes[0]['id']);
+  const [activeId, setActiveId] = React.useState<RouteId>('');
   const { close } = useNavbarContext();
   const { navigate } = useRouter();
   const { navigateToFlowStart } = useNavigateToFlowStart();
@@ -83,7 +82,7 @@ export const NavBar = (props: NavBarProps) => {
         for (const entry of entries) {
           const id = entry.target?.id?.split('section-')[1];
           if (entry.isIntersecting && id) {
-            return setActiveId(id as NavbarItemId);
+            return setActiveId(id);
           }
         }
       };
@@ -123,8 +122,9 @@ export const NavBar = (props: NavBarProps) => {
       const matchesPath = router.matches(route.path);
       if (isRoot || matchesPath) {
         setActiveId(route.id);
+        return false;
       }
-      return false;
+      return true;
     });
   }, [router.currentPath]);
 
