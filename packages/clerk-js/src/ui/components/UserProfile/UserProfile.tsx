@@ -5,15 +5,13 @@ import { withRedirectToHomeUserGuard } from '../../common';
 import { ComponentContext, withCoreUserGuard } from '../../contexts';
 import { Flow } from '../../customizables';
 import { ProfileCard, withCardStateProvider } from '../../elements';
-import { Route, Switch, useRouter } from '../../router';
+import { Route, Switch } from '../../router';
 import type { UserProfileCtx } from '../../types';
-import { createUserProfileCustomPages } from './createUserProfileCustomPages';
 import { UserProfileNavbar } from './UserProfileNavbar';
 import { UserProfileRoutes } from './UserProfileRoutes';
 import { VerificationSuccessPage } from './VerifyWithLink';
 
-const _UserProfile = (props: UserProfileProps) => {
-  const { navigate } = useRouter();
+const _UserProfile = () => {
   return (
     <Flow.Root flow='userProfile'>
       <Flow.Part>
@@ -23,10 +21,7 @@ const _UserProfile = (props: UserProfileProps) => {
             <VerificationSuccessPage />
           </Route>
           <Route>
-            <AuthenticatedRoutes
-              customPages={props.customPages}
-              externalNavigate={navigate}
-            />
+            <AuthenticatedRoutes />
           </Route>
         </Switch>
       </Flow.Part>
@@ -34,26 +29,12 @@ const _UserProfile = (props: UserProfileProps) => {
   );
 };
 
-const AuthenticatedRoutes = withCoreUserGuard((props: any) => {
+const AuthenticatedRoutes = withCoreUserGuard(() => {
   const contentRef = React.useRef<HTMLDivElement>(null);
-
-  const customPages = props.customPages || [];
-  const { userProfileRoutes, userProfileCustomPages, isAccountFirst } = createUserProfileCustomPages(
-    customPages || [],
-    props.externalNavigate,
-  );
-
   return (
     <ProfileCard sx={{ height: '100%' }}>
-      <UserProfileNavbar
-        contentRef={contentRef}
-        userProfileRoutes={userProfileRoutes}
-      >
-        <UserProfileRoutes
-          contentRef={contentRef}
-          userProfileCustomPages={userProfileCustomPages}
-          isAccountFirst={isAccountFirst}
-        />
+      <UserProfileNavbar contentRef={contentRef}>
+        <UserProfileRoutes contentRef={contentRef} />
       </UserProfileNavbar>
     </ProfileCard>
   );

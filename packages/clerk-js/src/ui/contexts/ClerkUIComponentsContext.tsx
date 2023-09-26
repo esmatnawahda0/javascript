@@ -1,8 +1,11 @@
 import type { OrganizationResource, UserResource } from '@clerk/types';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { buildAuthQueryString, buildURL, createDynamicParamParser, pickRedirectionProp } from '../../utils';
+import { createCustomPages } from '../common';
+import type { CustomPageContent } from '../common/createCustomPages';
 import { useCoreClerk, useEnvironment, useOptions } from '../contexts';
+import type { NavbarRoute } from '../elements';
 import type { ParsedQs } from '../router';
 import { useRouter } from '../router';
 import type {
@@ -158,24 +161,34 @@ export const useSignInContext = (): SignInContextType => {
   };
 };
 
+type PagesType = {
+  routes: NavbarRoute[];
+  contents: CustomPageContent[];
+  isAccountFirst: boolean;
+};
+
 export type UserProfileContextType = UserProfileCtx & {
   queryParams: ParsedQs;
   authQueryString: string | null;
+  pages: PagesType;
 };
 
 // UserProfile does not accept any props except for
 // `routing` and `path`
 // TODO: remove if not needed during the components v2 overhaul
 export const useUserProfileContext = (): UserProfileContextType => {
-  const { componentName, ...ctx } = (React.useContext(ComponentContext) || {}) as UserProfileCtx;
+  const { componentName, customPages, ...ctx } = (React.useContext(ComponentContext) || {}) as UserProfileCtx;
   const { queryParams } = useRouter();
 
   if (componentName !== 'UserProfile') {
     throw new Error('Clerk: useUserProfileContext called outside of the mounted UserProfile component.');
   }
 
+  const pages = useMemo(() => createCustomPages(customPages || []), [customPages]);
+
   return {
     ...ctx,
+    pages,
     componentName,
     queryParams,
     authQueryString: '',

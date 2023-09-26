@@ -16,3 +16,5 @@ export * from './NotificationCountBadge';
 export * from './RemoveResourcePage';
 export * from './withOrganizationsEnabledGuard';
 export * from './QRCode';
+export { ExternalElementMounter } from './ExternalElementMounter';
+export { createCustomPages } from './createCustomPages';

@@ -1,11 +1,11 @@
+import { ExternalElementMounter } from '../../common';
+import { useUserProfileContext } from '../../contexts';
 import { ProfileCardContent } from '../../elements';
 import { Route, Switch } from '../../router';
 import type { PropsOfComponent } from '../../styledSystem';
 import { ConnectedAccountsPage } from './ConnectedAccountsPage';
-import type { UserProfileCustomPage } from './createUserProfileCustomPages';
 import { DeletePage } from './DeletePage';
 import { EmailPage } from './EmailPage';
-import { ExternalElementMounter } from './ExternalElementMounter';
 import { MfaBackupCodeCreatePage } from './MfaBackupCodeCreatePage';
 import { MfaPage } from './MfaPage';
 import { PasswordPage } from './PasswordPage';
@@ -23,21 +23,17 @@ import { RootPage } from './RootPage';
 import { UsernamePage } from './UsernamePage';
 import { Web3Page } from './Web3Page';
 
-export const UserProfileRoutes = (
-  props: PropsOfComponent<typeof ProfileCardContent> & {
-    userProfileCustomPages: UserProfileCustomPage[];
-    isAccountFirst: boolean;
-  },
-) => {
-  const accountPathPrefix = props.isAccountFirst ? '' : 'account/';
+export const UserProfileRoutes = (props: PropsOfComponent<typeof ProfileCardContent>) => {
+  const { pages } = useUserProfileContext();
+  const accountPathPrefix = pages.isAccountFirst ? '' : 'account/';
   return (
     <ProfileCardContent contentRef={props.contentRef}>
       <Switch>
         {/* Custom Pages */}
-        {props.userProfileCustomPages?.map((customPage, index) => (
+        {pages.contents?.map((customPage, index) => (
           <Route
-            index={!props.isAccountFirst && index === 0}
-            path={!props.isAccountFirst && index === 0 ? undefined : customPage.url}
+            index={!pages.isAccountFirst && index === 0}
+            path={!pages.isAccountFirst && index === 0 ? undefined : customPage.url}
             key={`custom-page-${index}`}
           >
             <ExternalElementMounter
@@ -125,8 +121,8 @@ export const UserProfileRoutes = (
           <DeletePage />
         </Route>
         <Route
-          path={props.isAccountFirst ? undefined : 'account'}
-          index={props.isAccountFirst}
+          path={pages.isAccountFirst ? undefined : 'account'}
+          index={pages.isAccountFirst}
         >
           <RootPage />
         </Route>

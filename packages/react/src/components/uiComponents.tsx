@@ -11,7 +11,7 @@ import type {
 import type { PropsWithChildren } from 'react';
 import React, { createElement } from 'react';
 
-import type { MountProps, UserProfileCustomLinkProps, UserProfileCustomPageProps, WithClerkProp } from '../types';
+import type { MountProps, UserProfileLinkProps, UserProfilePageProps, WithClerkProp } from '../types';
 import { useCustomPages } from '../utils/useCustomPages';
 import { withClerk } from './withClerk';
 
@@ -96,12 +96,12 @@ export const SignUp = withClerk(({ clerk, ...props }: WithClerkProp<SignUpProps>
   );
 }, 'SignUp');
 
-export function UserProfilePage({ children }: PropsWithChildren<UserProfileCustomPageProps>) {
+export function UserProfilePage({ children }: PropsWithChildren<UserProfilePageProps>) {
   console.error('text for misuse of UserProfile.Page');
   return <div>{children}</div>;
 }
 
-export function UserProfileLink({ children }: PropsWithChildren<UserProfileCustomLinkProps>) {
+export function UserProfileLink({ children }: PropsWithChildren<UserProfileLinkProps>) {
   console.error('text for misuse of UserProfile.Link');
   return <div>{children}</div>;
 }
@@ -120,8 +120,8 @@ const _UserProfile = withClerk(({ clerk, ...props }: WithClerkProp<PropsWithChil
 }, 'UserProfile');
 
 type UserProfileExportType = typeof _UserProfile & {
-  Page: ({ children }: PropsWithChildren<UserProfileCustomPageProps>) => React.JSX.Element;
-  Link: ({ children }: PropsWithChildren<UserProfileCustomLinkProps>) => React.JSX.Element;
+  Page: ({ children }: PropsWithChildren<UserProfilePageProps>) => React.JSX.Element;
+  Link: ({ children }: PropsWithChildren<UserProfileLinkProps>) => React.JSX.Element;
 };
 export const UserProfile: UserProfileExportType = Object.assign(_UserProfile, {
   Page: UserProfilePage,
@@ -143,8 +143,8 @@ const _UserButton = withClerk(({ clerk, ...props }: WithClerkProp<PropsWithChild
 }, 'UserButton');
 
 type UserButtonExportType = typeof _UserButton & {
-  UserProfilePage: ({ children }: PropsWithChildren<UserProfileCustomPageProps>) => React.JSX.Element;
-  UserProfileLink: ({ children }: PropsWithChildren<UserProfileCustomLinkProps>) => React.JSX.Element;
+  UserProfilePage: ({ children }: PropsWithChildren<UserProfilePageProps>) => React.JSX.Element;
+  UserProfileLink: ({ children }: PropsWithChildren<UserProfileLinkProps>) => React.JSX.Element;
 };
 export const UserButton: UserButtonExportType = Object.assign(_UserButton, {
   UserProfilePage: UserProfilePage,

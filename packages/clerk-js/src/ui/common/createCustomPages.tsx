@@ -1,7 +1,8 @@
-import type { NavbarRoute } from '../../elements';
-import { TickShield, User } from '../../icons';
-import { localizationKeys } from '../../localization';
-import { ExternalElementMounter } from './ExternalElementMounter';
+import { isValidUrl } from '../../utils';
+import type { NavbarRoute } from '../elements';
+import { TickShield, User } from '../icons';
+import { localizationKeys } from '../localization';
+import { ExternalElementMounter } from './index';
 
 const CLERK_ACCOUNT_ROUTE: NavbarRoute = {
   name: localizationKeys('userProfile.start.headerTitle__account'),
@@ -17,13 +18,13 @@ const CLERK_SECURITY_ROUTE: NavbarRoute = {
   path: 'account',
 };
 
-export type UserProfileCustomPage = {
+export type CustomPageContent = {
   url: string;
   mount: (el: HTMLDivElement) => void;
   unmount: (el?: HTMLDivElement) => void;
 };
 
-type CustomPage = {
+export type CustomPage = {
   label: string;
   url?: string;
   mountIcon?: (el: HTMLDivElement) => void;
@@ -32,32 +33,44 @@ type CustomPage = {
   unmount?: (el?: HTMLDivElement) => void;
 };
 
-export const createUserProfileCustomPages = (customPages: CustomPage[], navigate: (to: string) => void) => {
-  let clerkDefaultRoutes = [CLERK_ACCOUNT_ROUTE, CLERK_SECURITY_ROUTE];
-  const routesWithoutDefaultRoutes: NavbarRoute[] = [];
-  const userProfileCustomPages: UserProfileCustomPage[] = [];
+const sanitizeCustomPageURL = (url: string): string => {
+  if (!url) {
+    throw new Error('URL is required for custom pages');
+  }
+  if (isValidUrl(url)) {
+    throw new Error('Absolute URLs are not supported for custom pages');
+  }
+  return (url as string).charAt(0) === '/' && (url as string).length > 1 ? (url as string).substring(1) : url;
+};
+
+const sanitizeCustomLinkURL = (url: string): string => {
+  if (!url) {
+    throw new Error('URL is required for custom links');
+  }
+  if (isValidUrl(url)) {
+    return url;
+  }
+  return (url as string).charAt(0) === '/' ? url : `/${url}`;
+};
+
+export const createCustomPages = (customPages: CustomPage[]) => {
+  let clerkDefaultRoutes = [{ ...CLERK_ACCOUNT_ROUTE }, { ...CLERK_SECURITY_ROUTE }];
+  const routesWithoutDefaults: NavbarRoute[] = [];
+  const contents: CustomPageContent[] = [];
 
   customPages.forEach((customPage, index: number) => {
     const { label, url, mount, unmount, mountIcon, unmountIcon } = customPage;
     if (!url && !mount && !unmount && !mountIcon && !unmountIcon && label === 'account') {
       // reordering account
-      if (index === 0) {
-        routesWithoutDefaultRoutes.push({ ...CLERK_ACCOUNT_ROUTE, path: '/' });
-      } else {
-        routesWithoutDefaultRoutes.push(CLERK_ACCOUNT_ROUTE);
-      }
+      routesWithoutDefaults.push({ ...CLERK_ACCOUNT_ROUTE });
       clerkDefaultRoutes = clerkDefaultRoutes.filter(({ id }) => id !== 'account');
     } else if (!url && !mount && !unmount && !mountIcon && !unmountIcon && label === 'security') {
       // reordering security
-      if (index === 0) {
-        routesWithoutDefaultRoutes.push({ ...CLERK_SECURITY_ROUTE, path: '/' });
-      } else {
-        routesWithoutDefaultRoutes.push(CLERK_SECURITY_ROUTE);
-      }
+      routesWithoutDefaults.push({ ...CLERK_SECURITY_ROUTE });
       clerkDefaultRoutes = clerkDefaultRoutes.filter(({ id }) => id !== 'security');
     } else if (!!url && !!label && !mount && !unmount && !!mountIcon && !!unmountIcon) {
       // external link
-      routesWithoutDefaultRoutes.push({
+      routesWithoutDefaults.push({
         name: label,
         id: `custom-page-${index}`,
         icon: () => (
@@ -66,13 +79,14 @@ export const createUserProfileCustomPages = (customPages: CustomPage[], navigate
             unmount={unmountIcon}
           />
         ),
-        path: '',
-        externalNavigate: () => navigate(url),
+        path: sanitizeCustomLinkURL(url),
+        external: true,
       });
     } else if (!!url && !!label && !!mount && !!unmount && !!mountIcon && !!unmountIcon) {
       // custom page
-      userProfileCustomPages.push({ url, mount, unmount });
-      routesWithoutDefaultRoutes.push({
+      const pageURL = sanitizeCustomPageURL(url);
+      contents.push({ url: pageURL, mount, unmount });
+      routesWithoutDefaults.push({
         name: label,
         id: `custom-page-${index}`,
         icon: () => (
@@ -81,21 +95,30 @@ export const createUserProfileCustomPages = (customPages: CustomPage[], navigate
             unmount={unmountIcon}
           />
         ),
-        path: url,
+        path: pageURL,
       });
     } else {
       console.error('Invalid custom page data: ', customPage);
     }
   });
 
-  // Set the path of the first route to '/' if the default routes are used above
-  if (clerkDefaultRoutes.length === 0 && routesWithoutDefaultRoutes.length > 0) {
-    routesWithoutDefaultRoutes[0].path = '/';
+  // Set the path of the first route to '/' or if the first route is account or security, set the path of both account and security to '/'
+  let routes = [...clerkDefaultRoutes, ...routesWithoutDefaults];
+  if (routes[0].external) {
+    throw new Error('The first route cannot be a <UserProfile.Link /> component');
+  }
+  if (routes[0].id === 'account' || routes[0].id === 'security') {
+    routes = routes.map(r => {
+      if (r.id === 'account' || r.id === 'security') {
+        return { ...r, path: '/' };
+      }
+      return r;
+    });
+  } else {
+    routes[0].path = '/';
   }
 
-  const userProfileRoutes = [...clerkDefaultRoutes.map(r => ({ ...r, path: '/' })), ...routesWithoutDefaultRoutes];
-
-  return { userProfileRoutes, userProfileCustomPages, isAccountFirst: userProfileRoutes[0].id === 'account' };
+  return { routes, contents, isAccountFirst: routes[0].id === 'account' || routes[0].id === 'security' };
 };
 
 export const pageToRootNavbarRouteMap = {

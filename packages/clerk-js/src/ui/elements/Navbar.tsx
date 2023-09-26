@@ -30,7 +30,7 @@ export type NavbarRoute = {
   id: string;
   icon: React.ComponentType;
   path: string;
-  externalNavigate?: () => void;
+  external?: boolean;
 };
 type RouteId = NavbarRoute['id'];
 type NavBarProps = {
@@ -51,8 +51,8 @@ export const NavBar = (props: NavBarProps) => {
   const router = useRouter();
 
   const handleNavigate = (route: NavbarRoute) => {
-    if (route?.externalNavigate) {
-      return () => route.externalNavigate?.();
+    if (route?.external) {
+      return () => navigate(route.path);
     } else {
       return () => navigateAndScroll(route);
     }

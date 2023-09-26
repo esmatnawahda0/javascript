@@ -10,6 +10,7 @@ import type {
   SessionResource,
   UserResource,
 } from '@clerk/types';
+import type React from 'react';
 
 declare global {
   interface Window {
@@ -86,32 +87,14 @@ export type SignInWithMetamaskButtonProps = Pick<ButtonProps, 'redirectUrl' | 'c
 
 export type RedirectToProps = RedirectOptions;
 
-export type UserProfileCustomPageProps = {
-  /*
-   * This is the path that will be used to navigate to the custom page.
-   */
+export type UserProfilePageProps = {
   url?: string;
-  /*
-   * This is the name that will be displayed in the navigation sidebar for the custom page
-   */
   label: string;
-  /*
-   * This is the icon that will be displayed in the navigation sidebar for the custom page.
-   */
   labelIcon?: React.ReactElement;
 };
 
-export type UserProfileCustomLinkProps = {
-  /*
-   * This is the path that will be used to navigate to the custom page.
-   */
+export type UserProfileLinkProps = {
   url: string;
-  /*
-   * This is the name that will be displayed in the navigation sidebar for the custom page
-   */
   label: string;
-  /*
-   * This is the icon that will be displayed in the navigation sidebar for the custom page.
-   */
   labelIcon: React.ReactElement;
 };

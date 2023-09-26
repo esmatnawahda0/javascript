@@ -1,19 +1,18 @@
 import React from 'react';
 
-import type { NavbarRoute } from '../../elements';
+import { pageToRootNavbarRouteMap } from '../../common/createCustomPages';
+import { useUserProfileContext } from '../../contexts';
 import { Breadcrumbs, NavBar, NavbarContextProvider } from '../../elements';
 import type { PropsOfComponent } from '../../styledSystem';
-import { pageToRootNavbarRouteMap } from './createUserProfileCustomPages';
 
 export const UserProfileNavbar = (
-  props: React.PropsWithChildren<Pick<PropsOfComponent<typeof NavBar>, 'contentRef'>> & {
-    userProfileRoutes: NavbarRoute[];
-  },
+  props: React.PropsWithChildren<Pick<PropsOfComponent<typeof NavBar>, 'contentRef'>>,
 ) => {
+  const { pages } = useUserProfileContext();
   return (
     <NavbarContextProvider>
       <NavBar
-        routes={props.userProfileRoutes}
+        routes={pages.routes}
         contentRef={props.contentRef}
       />
       {props.children}
