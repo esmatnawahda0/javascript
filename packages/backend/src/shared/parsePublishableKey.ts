@@ -1,5 +1,7 @@
 import type { PublishableKey } from '@clerk/types';
 
+import isomorphicAtob from './isomorphicAtob';
+
 const PUBLISHABLE_KEY_LIVE_PREFIX = 'pk_live_';
 const PUBLISHABLE_KEY_TEST_PREFIX = 'pk_test_';
 
@@ -45,12 +47,3 @@ export function isPublishableKey(key: string) {
 
   return hasValidPrefix && hasValidFrontendApiPostfix;
 }
-
-const isomorphicAtob = (data: string) => {
-  if (typeof atob !== 'undefined' && typeof atob === 'function') {
-    return atob(data);
-  } else if (typeof globalThis !== 'undefined' && globalThis.Buffer) {
-    return new globalThis.Buffer(data, 'base64').toString();
-  }
-  return data;
-};
