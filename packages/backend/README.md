@@ -145,7 +145,7 @@ import { decodeJwt } from '@clerk/backend';
 decodeJwt(token);
 ```
 
-#### hasValidSignature(jwt: Jwt, jwk: JsonWebKey)
+#### hasValidSignature(jwt: Jwt, key: JsonWebKey | string)
 
 Verifies that the JWT has a valid signature. The key needs to be provided.
 

@@ -59,3 +59,36 @@ export const mockPEMJwtKey =
   'qpj5Cb+sxfFI+Vhf1GB1bNeOLPR10nkSMJ74HB0heHi/SsM83JiGekv0CpZPCC8j\n' +
   'cQIDAQAB\n' +
   '-----END PUBLIC KEY-----';
+
+export const pemEncodedPublicKey = `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqYy3MY8fOneEyzNDu9lp
+6iGXKkNUF+u/dUnrlkadZYyB35efzKFJEr9fftmWv5PUj1uRHTQ3bh6X1cceOYsI
+jy008dHWZJsKhGOxgdTjeK91rjaklxt7tyFXEiKHIOr1LSgKzopClOfCIjxK/oPU
+Of38pVh7WnekcSBQmU5fqA+EzKMi6k9VwvbzqKlZM4XQsiFyn28d9VubJWjTU8nN
+ot0n1NE+9k6TxM8nglM4RwkBH4Ni4B0LhKKOOV+AG8tBNiZVil415dpBldmJ/j0w
+k7Ad4VFi9en3Z17oCKr+K+zuT7vKMKSb1548dk0vnmi0vj2QGXSo+61wM5yQWpk6
+sQIDAQAB
+-----END PUBLIC KEY-----`;
+
+export const someOtherPublicKey = `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5wdNEDm/HUAO6xarLs6e
+cS0/J8GencMs5I6rYS825knb8jsNbfoukYfBiK81vQy1/eK5gdWrEprpXQrmIcwG
+akdeUhybYlK68UhHNA5+TAmZ+ReLTJ2QDk5YU4I1NlRRq/bqtEhWsBDOCCkpVsC4
+OLnUpsZKGUwpCrE/8stMSJ6Xx+TzBlDe21cV1j0gn5CWswrrXo7m8OIZ9xkRnNn4
+fTNypMSCbx6BS7fgmer6Efx9HOu9UIKgXD/29q3pEpFXiHRdQRbVoAc9vEZl0QIw
+PSNjILVJLKvb6MhKoQMyaP5k0c1rEkVJr9jQk5Z/6WPklCNK3oT5+gh2lgi7ZxBd
+oQIDAQAB
+-----END PUBLIC KEY-----`;
+
+export const publicJwks = {
+  key_ops: ['verify'],
+  ext: true,
+  kty: 'RSA',
+  n: 'qYy3MY8fOneEyzNDu9lp6iGXKkNUF-u_dUnrlkadZYyB35efzKFJEr9fftmWv5PUj1uRHTQ3bh6X1cceOYsIjy008dHWZJsKhGOxgdTjeK91rjaklxt7tyFXEiKHIOr1LSgKzopClOfCIjxK_oPUOf38pVh7WnekcSBQmU5fqA-EzKMi6k9VwvbzqKlZM4XQsiFyn28d9VubJWjTU8nNot0n1NE-9k6TxM8nglM4RwkBH4Ni4B0LhKKOOV-AG8tBNiZVil415dpBldmJ_j0wk7Ad4VFi9en3Z17oCKr-K-zuT7vKMKSb1548dk0vnmi0vj2QGXSo-61wM5yQWpk6sQ',
+  e: 'AQAB',
+  alg: 'RS256',
+};
+
+// this jwt has be signe with the keys above. The payload is mockJwtPayload and the header is mockJwtHeader
+export const signedJwt =
+  'eyJhbGciOiJSUzI1NiIsImtpZCI6Imluc18yR0lvUWhiVXB5MGhYN0IyY1ZrdVRNaW5Yb0QiLCJ0eXAiOiJKV1QifQ.eyJhenAiOiJodHRwczovL2FjY291bnRzLmluc3BpcmVkLnB1bWEtNzQubGNsLmRldiIsImV4cCI6MTY2NjY0ODMxMCwiaWF0IjoxNjY2NjQ4MjUwLCJpc3MiOiJodHRwczovL2NsZXJrLmluc3BpcmVkLnB1bWEtNzQubGNsLmRldiIsIm5iZiI6MTY2NjY0ODI0MCwic2lkIjoic2Vzc18yR2JEQjRlbk5kQ2E1dlMxenBDM1h6Zzl0SzkiLCJzdWIiOiJ1c2VyXzJHSXBYT0VwVnlKdzUxcmtabjlLbW5jNlN4ciJ9.j3rB92k32WqbQDkFB093H4GoQsBVLH4HLGF6ObcwUaVGiHC8SEu6T31FuPf257SL8A5sSGtWWM1fqhQpdLohgZb_hbJswGBuYI-Clxl9BtpIRHbWFZkLBIj8yS9W9aVtD3fWBbF6PHx7BY1udio-rbGWg1YAOZNtVcxF02p-MvX-8XIK92Vwu3Un5zyfCoVIg__qo3Xntzw3tznsZ4XDe212c6kVz1R_L1d5DKjeWXpjUPAS_zFeZSIJEQLf4JNr4JCY38tfdnc3ajfDA3p36saf1XwmTdWXQKCXi75c2TJAXROs3Pgqr5Kw_5clygoFuxN5OEMhFWFSnvIBdi3M6w';

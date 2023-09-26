@@ -6,6 +6,7 @@ import keysTest from './dist/tokens/keys.test.js';
 import pathTest from './dist/util/path.test.js';
 import verifyTest from './dist/tokens/verify.test.js';
 import verifyJwtTest from './dist/tokens/jwt/verifyJwt.test.js';
+import hasValidSignatureTest from './dist/tokens/jwt/hasValidSignature.test.js';
 import interstitialRequestTest from './dist/tokens/interstitial.test.js';
 
 import jwtAssertionsTest from './dist/tokens/jwt/assertions.test.js';
@@ -29,6 +30,7 @@ const suites = [
   verifyTest,
   pathTest,
   verifyJwtTest,
+  hasValidSignatureTest,
   factoryTest,
   redirectTest,
   utilsTest,
