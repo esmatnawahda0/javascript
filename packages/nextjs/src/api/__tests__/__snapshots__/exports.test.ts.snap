@@ -26,6 +26,7 @@ exports[`/api public exports should not include a breaking change 1`] = `
   "Token",
   "User",
   "Verification",
+  "__unstable__signJwt",
   "allowlistIdentifiers",
   "buildRequestUrl",
   "clerkClient",

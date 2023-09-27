@@ -32,6 +32,7 @@ export default (QUnit: QUnit) => {
         'Token',
         'User',
         'Verification',
+        '__unstable__signJwt',
         'buildRequestUrl',
         'constants',
         'createAuthenticateRequest',
