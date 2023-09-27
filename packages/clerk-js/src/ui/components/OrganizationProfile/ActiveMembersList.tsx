@@ -12,7 +12,6 @@ export const ActiveMembersList = () => {
     organization,
     membership: currentUserMembership,
     memberships,
-    ...rest
   } = useCoreOrganization({
     memberships: true,
   });
@@ -25,13 +24,6 @@ export const ActiveMembersList = () => {
 
   const isAdmin = currentUserMembership?.role === 'admin';
 
-  const mutateSwrState = () => {
-    const unstable__mutate = (rest as any).unstable__mutate;
-    if (unstable__mutate && typeof unstable__mutate === 'function') {
-      unstable__mutate();
-    }
-  };
-
   if (!organization) {
     return null;
   }
@@ -43,7 +35,7 @@ export const ActiveMembersList = () => {
     return card
       .runAsync(async () => {
         await membership.update({ role: newRole });
-        await adminMembers?.mutate?.();
+        await adminMembers?.revalidate?.();
       })
       .catch(err => handleError(err, [], card.setError));
   };
@@ -54,11 +46,10 @@ export const ActiveMembersList = () => {
     }
     return card
       .runAsync(async () => {
-        const destroyedMembership = membership.destroy();
-        await adminMembers?.mutate?.();
+        const destroyedMembership = await membership.destroy();
+        await Promise.all([adminMembers?.revalidate?.(), memberships?.revalidate?.()]);
         return destroyedMembership;
       })
-      .then(mutateSwrState)
       .catch(err => handleError(err, [], card.setError));
   };
 
