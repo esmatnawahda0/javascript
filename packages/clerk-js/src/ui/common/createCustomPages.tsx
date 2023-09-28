@@ -1,3 +1,5 @@
+import { isDevelopmentEnvironment } from '@clerk/shared';
+
 import { isValidUrl } from '../../utils';
 import type { NavbarRoute } from '../elements';
 import { TickShield, User } from '../icons';
@@ -98,7 +100,9 @@ export const createCustomPages = (customPages: CustomPage[]) => {
         path: pageURL,
       });
     } else {
-      console.error('Invalid custom page data: ', customPage);
+      if (isDevelopmentEnvironment()) {
+        console.error('Invalid custom page data: ', customPage);
+      }
     }
   });
 
@@ -118,7 +122,19 @@ export const createCustomPages = (customPages: CustomPage[]) => {
     routes[0].path = '/';
   }
 
+  if (isDevelopmentEnvironment()) {
+    warnForDuplicatePaths(routes);
+  }
+
   return { routes, contents, isAccountFirst: routes[0].id === 'account' || routes[0].id === 'security' };
+};
+
+const warnForDuplicatePaths = (routes: NavbarRoute[]) => {
+  const paths = routes.filter(({ external, path }) => !external && path !== '/').map(({ path }) => path);
+  const duplicatePaths = paths.filter((p, index) => paths.indexOf(p) !== index);
+  duplicatePaths.forEach(p => {
+    console.error(`Duplicate path "${p}" found in custom pages. This may cause unexpected behavior.`);
+  });
 };
 
 export const pageToRootNavbarRouteMap = {
