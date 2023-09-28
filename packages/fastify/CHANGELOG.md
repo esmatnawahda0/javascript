@@ -1,5 +1,14 @@
 # Change Log
 
+## 0.6.10
+
+### Patch Changes
+
+- Updated dependencies [[`7ffa6fac3`](https://github.com/clerkinc/javascript/commit/7ffa6fac3762f6fb130ba2f2fcaa28e52b36b3b4), [`5c8754239`](https://github.com/clerkinc/javascript/commit/5c8754239e9ef13656fb73f30c9c6a6187b9aa81), [`2f6a6ac99`](https://github.com/clerkinc/javascript/commit/2f6a6ac9991469bf8532019bb22ff50adecdb434), [`2f6a6ac99`](https://github.com/clerkinc/javascript/commit/2f6a6ac9991469bf8532019bb22ff50adecdb434), [`753f7bbda`](https://github.com/clerkinc/javascript/commit/753f7bbda9bbb7444f96222a3b6cae815a09058f), [`55c8ebd39`](https://github.com/clerkinc/javascript/commit/55c8ebd390dd88036aee06866009be6a50c63138)]:
+  - @clerk/shared@0.24.0
+  - @clerk/types@3.53.0
+  - @clerk/backend@0.30.0
+
 ## 0.6.9
 
 ### Patch Changes

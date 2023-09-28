@@ -1,5 +1,23 @@
 # Change Log
 
+## 4.25.0
+
+### Minor Changes
+
+- Add the `use client` directive in `@clerk/shared` to make the package compatible with an RSC environment. ([#1767](https://github.com/clerkinc/javascript/pull/1767)) by [@dimkl](https://github.com/dimkl)
+
+  Remove several helpers from `@clerk/nextjs` and import them from `@clerk/shared` instead.
+
+### Patch Changes
+
+- Warn about deprecations that will be dropped in next major version ([#1767](https://github.com/clerkinc/javascript/pull/1767)) by [@dimkl](https://github.com/dimkl)
+
+- Updated dependencies [[`5c8754239`](https://github.com/clerkinc/javascript/commit/5c8754239e9ef13656fb73f30c9c6a6187b9aa81), [`14895e2dd`](https://github.com/clerkinc/javascript/commit/14895e2dde0fa15b594b1b7d89829d6013f5afc6), [`2f6a6ac99`](https://github.com/clerkinc/javascript/commit/2f6a6ac9991469bf8532019bb22ff50adecdb434)]:
+  - @clerk/clerk-react@4.26.0
+  - @clerk/types@3.53.0
+  - @clerk/backend@0.30.0
+  - @clerk/clerk-sdk-node@4.12.9
+
 ## 4.24.2
 
 ### Patch Changes
