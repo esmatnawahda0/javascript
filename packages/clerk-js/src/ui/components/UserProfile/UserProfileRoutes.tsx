@@ -31,8 +31,8 @@ export const UserProfileRoutes = (props: PropsOfComponent<typeof ProfileCardCont
         {/* Custom Pages */}
         {pages.contents?.map((customPage, index) => (
           <Route
-            index={!pages.isAccountFirst && index === 0}
-            path={!pages.isAccountFirst && index === 0 ? undefined : customPage.url}
+            index={!pages.isAccountPageRoot && index === 0}
+            path={!pages.isAccountPageRoot && index === 0 ? undefined : customPage.url}
             key={`custom-page-${index}`}
           >
             <ExternalElementMounter
@@ -41,7 +41,7 @@ export const UserProfileRoutes = (props: PropsOfComponent<typeof ProfileCardCont
             />
           </Route>
         ))}
-        <Route path={pages.isAccountFirst ? undefined : 'account'}>
+        <Route path={pages.isAccountPageRoot ? undefined : 'account'}>
           <Route
             path='profile'
             flowStart

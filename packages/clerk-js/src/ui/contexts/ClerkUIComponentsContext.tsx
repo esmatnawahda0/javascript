@@ -164,7 +164,7 @@ export const useSignInContext = (): SignInContextType => {
 type PagesType = {
   routes: NavbarRoute[];
   contents: CustomPageContent[];
-  isAccountFirst: boolean;
+  isAccountPageRoot: boolean;
 };
 
 export type UserProfileContextType = UserProfileCtx & {
@@ -173,9 +173,6 @@ export type UserProfileContextType = UserProfileCtx & {
   pages: PagesType;
 };
 
-// UserProfile does not accept any props except for
-// `routing` and `path`
-// TODO: remove if not needed during the components v2 overhaul
 export const useUserProfileContext = (): UserProfileContextType => {
   const { componentName, customPages, ...ctx } = (React.useContext(ComponentContext) || {}) as UserProfileCtx;
   const { queryParams } = useRouter();

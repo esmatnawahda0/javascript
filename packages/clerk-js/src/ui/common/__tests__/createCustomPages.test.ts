@@ -3,12 +3,12 @@ import { createCustomPages } from '../createCustomPages';
 
 describe('createCustomPages', () => {
   it('should return the default pages if no custom pages are passed', () => {
-    const { routes, contents, isAccountFirst } = createCustomPages([]);
+    const { routes, contents, isAccountPageRoot } = createCustomPages([]);
     expect(routes.length).toEqual(2);
     expect(routes[0].id).toEqual('account');
     expect(routes[1].id).toEqual('security');
     expect(contents.length).toEqual(0);
-    expect(isAccountFirst).toEqual(true);
+    expect(isAccountPageRoot).toEqual(true);
   });
 
   it('should return the custom pages after the default pages', () => {
@@ -30,7 +30,7 @@ describe('createCustomPages', () => {
         unmountIcon: () => undefined,
       },
     ];
-    const { routes, contents, isAccountFirst } = createCustomPages(customPages);
+    const { routes, contents, isAccountPageRoot } = createCustomPages(customPages);
     expect(routes.length).toEqual(4);
     expect(routes[0].id).toEqual('account');
     expect(routes[1].id).toEqual('security');
@@ -39,7 +39,7 @@ describe('createCustomPages', () => {
     expect(contents.length).toEqual(2);
     expect(contents[0].url).toEqual('/custom1');
     expect(contents[1].url).toEqual('/custom2');
-    expect(isAccountFirst).toEqual(true);
+    expect(isAccountPageRoot).toEqual(true);
   });
 
   it('should reorder the default pages when their label is used to target them', () => {
@@ -63,7 +63,7 @@ describe('createCustomPages', () => {
         unmountIcon: () => undefined,
       },
     ];
-    const { routes, contents, isAccountFirst } = createCustomPages(customPages);
+    const { routes, contents, isAccountPageRoot } = createCustomPages(customPages);
     expect(routes.length).toEqual(4);
     expect(routes[0].name).toEqual('Custom1');
     expect(routes[1].id).toEqual('account');
@@ -72,7 +72,7 @@ describe('createCustomPages', () => {
     expect(contents.length).toEqual(2);
     expect(contents[0].url).toEqual('/custom1');
     expect(contents[1].url).toEqual('/custom2');
-    expect(isAccountFirst).toEqual(false);
+    expect(isAccountPageRoot).toEqual(false);
   });
 
   it('adds an external link to the navbar routes', () => {
@@ -92,7 +92,7 @@ describe('createCustomPages', () => {
         unmountIcon: () => undefined,
       },
     ];
-    const { routes, contents, isAccountFirst } = createCustomPages(customPages);
+    const { routes, contents, isAccountPageRoot } = createCustomPages(customPages);
     expect(routes.length).toEqual(4);
     expect(routes[0].id).toEqual('account');
     expect(routes[1].id).toEqual('security');
@@ -100,6 +100,6 @@ describe('createCustomPages', () => {
     expect(routes[3].name).toEqual('Link1');
     expect(contents.length).toEqual(1);
     expect(contents[0].url).toEqual('/custom1');
-    expect(isAccountFirst).toEqual(true);
+    expect(isAccountPageRoot).toEqual(true);
   });
 });

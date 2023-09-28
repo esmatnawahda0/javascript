@@ -20,6 +20,17 @@ const CLERK_SECURITY_ROUTE: NavbarRoute = {
   path: 'account',
 };
 
+export const pageToRootNavbarRouteMap = {
+  profile: CLERK_ACCOUNT_ROUTE,
+  'email-address': CLERK_ACCOUNT_ROUTE,
+  'phone-number': CLERK_ACCOUNT_ROUTE,
+  'connected-account': CLERK_ACCOUNT_ROUTE,
+  'web3-wallet': CLERK_ACCOUNT_ROUTE,
+  username: CLERK_ACCOUNT_ROUTE,
+  'multi-factor': CLERK_SECURITY_ROUTE,
+  password: CLERK_SECURITY_ROUTE,
+};
+
 export type CustomPageContent = {
   url: string;
   mount: (el: HTMLDivElement) => void;
@@ -35,24 +46,24 @@ export type CustomPage = {
   unmount?: (el?: HTMLDivElement) => void;
 };
 
-const sanitizeCustomPageURL = (url: string): string => {
-  if (!url) {
-    throw new Error('URL is required for custom pages');
-  }
-  if (isValidUrl(url)) {
-    throw new Error('Absolute URLs are not supported for custom pages');
-  }
-  return (url as string).charAt(0) === '/' && (url as string).length > 1 ? (url as string).substring(1) : url;
+type UserProfileReorderItem = {
+  label: 'account' | 'security';
 };
 
-const sanitizeCustomLinkURL = (url: string): string => {
-  if (!url) {
-    throw new Error('URL is required for custom links');
-  }
-  if (isValidUrl(url)) {
-    return url;
-  }
-  return (url as string).charAt(0) === '/' ? url : `/${url}`;
+type UserProfileCustomPage = {
+  label: string;
+  url: string;
+  mountIcon: (el: HTMLDivElement) => void;
+  unmountIcon: (el?: HTMLDivElement) => void;
+  mount: (el: HTMLDivElement) => void;
+  unmount: (el?: HTMLDivElement) => void;
+};
+
+type UserProfileCustomLink = {
+  label: string;
+  url: string;
+  mountIcon: (el: HTMLDivElement) => void;
+  unmountIcon: (el?: HTMLDivElement) => void;
 };
 
 export const createCustomPages = (customPages: CustomPage[]) => {
@@ -60,48 +71,47 @@ export const createCustomPages = (customPages: CustomPage[]) => {
   const routesWithoutDefaults: NavbarRoute[] = [];
   const contents: CustomPageContent[] = [];
 
-  customPages.forEach((customPage, index: number) => {
-    const { label, url, mount, unmount, mountIcon, unmountIcon } = customPage;
-    if (!url && !mount && !unmount && !mountIcon && !unmountIcon && label === 'account') {
-      // reordering account
+  if (isDevelopmentEnvironment()) {
+    checkForDuplicateUsageOfReorderingItems(customPages);
+  }
+
+  customPages.forEach((cp, index: number) => {
+    if (isAccountReorderItem(cp)) {
       routesWithoutDefaults.push({ ...CLERK_ACCOUNT_ROUTE });
       clerkDefaultRoutes = clerkDefaultRoutes.filter(({ id }) => id !== 'account');
-    } else if (!url && !mount && !unmount && !mountIcon && !unmountIcon && label === 'security') {
-      // reordering security
+    } else if (isSecurityReorderItem(cp)) {
       routesWithoutDefaults.push({ ...CLERK_SECURITY_ROUTE });
       clerkDefaultRoutes = clerkDefaultRoutes.filter(({ id }) => id !== 'security');
-    } else if (!!url && !!label && !mount && !unmount && !!mountIcon && !!unmountIcon) {
-      // external link
+    } else if (isCustomLink(cp)) {
       routesWithoutDefaults.push({
-        name: label,
+        name: cp.label,
         id: `custom-page-${index}`,
         icon: () => (
           <ExternalElementMounter
-            mount={mountIcon}
-            unmount={unmountIcon}
+            mount={cp.mountIcon}
+            unmount={cp.unmountIcon}
           />
         ),
-        path: sanitizeCustomLinkURL(url),
+        path: sanitizeCustomLinkURL(cp.url),
         external: true,
       });
-    } else if (!!url && !!label && !!mount && !!unmount && !!mountIcon && !!unmountIcon) {
-      // custom page
-      const pageURL = sanitizeCustomPageURL(url);
-      contents.push({ url: pageURL, mount, unmount });
+    } else if (isCustomPage(cp)) {
+      const pageURL = sanitizeCustomPageURL(cp.url);
+      contents.push({ url: pageURL, mount: cp.mount, unmount: cp.unmount });
       routesWithoutDefaults.push({
-        name: label,
+        name: cp.label,
         id: `custom-page-${index}`,
         icon: () => (
           <ExternalElementMounter
-            mount={mountIcon}
-            unmount={unmountIcon}
+            mount={cp.mountIcon}
+            unmount={cp.unmountIcon}
           />
         ),
         path: pageURL,
       });
     } else {
       if (isDevelopmentEnvironment()) {
-        console.error('Invalid custom page data: ', customPage);
+        console.error('Invalid custom page data: ', cp);
       }
     }
   });
@@ -126,24 +136,63 @@ export const createCustomPages = (customPages: CustomPage[]) => {
     warnForDuplicatePaths(routes);
   }
 
-  return { routes, contents, isAccountFirst: routes[0].id === 'account' || routes[0].id === 'security' };
+  return { routes, contents, isAccountPageRoot: routes[0].id === 'account' || routes[0].id === 'security' };
+};
+
+const checkForDuplicateUsageOfReorderingItems = (customPages: CustomPage[]) => {
+  const reorderItems = customPages.filter(cp => isAccountReorderItem(cp) || isSecurityReorderItem(cp));
+  reorderItems.reduce((acc, cp) => {
+    if (acc.includes(cp.label)) {
+      console.error(
+        `The "${cp.label}" item is used more than once when reordering UserProfile pages. This may cause unexpected behavior.`,
+      );
+    }
+    return [...acc, cp.label];
+  }, [] as string[]);
 };
 
 const warnForDuplicatePaths = (routes: NavbarRoute[]) => {
-  const paths = routes.filter(({ external, path }) => !external && path !== '/').map(({ path }) => path);
+  const paths = routes
+    .filter(({ external, path }) => !external && path !== '/' && path !== 'account')
+    .map(({ path }) => path);
   const duplicatePaths = paths.filter((p, index) => paths.indexOf(p) !== index);
   duplicatePaths.forEach(p => {
     console.error(`Duplicate path "${p}" found in custom pages. This may cause unexpected behavior.`);
   });
 };
 
-export const pageToRootNavbarRouteMap = {
-  profile: CLERK_ACCOUNT_ROUTE,
-  'email-address': CLERK_ACCOUNT_ROUTE,
-  'phone-number': CLERK_ACCOUNT_ROUTE,
-  'connected-account': CLERK_ACCOUNT_ROUTE,
-  'web3-wallet': CLERK_ACCOUNT_ROUTE,
-  username: CLERK_ACCOUNT_ROUTE,
-  'multi-factor': CLERK_SECURITY_ROUTE,
-  password: CLERK_SECURITY_ROUTE,
+const isCustomPage = (cp: CustomPage): cp is UserProfileCustomPage => {
+  return !!cp.url && !!cp.label && !!cp.mount && !!cp.unmount && !!cp.mountIcon && !!cp.unmountIcon;
+};
+
+const isCustomLink = (cp: CustomPage): cp is UserProfileCustomLink => {
+  return !!cp.url && !!cp.label && !cp.mount && !cp.unmount && !!cp.mountIcon && !!cp.unmountIcon;
+};
+
+const isAccountReorderItem = (cp: CustomPage): cp is UserProfileReorderItem => {
+  return !cp.url && !cp.mount && !cp.unmount && !cp.mountIcon && !cp.unmountIcon && cp.label === 'account';
+};
+
+const isSecurityReorderItem = (cp: CustomPage): cp is UserProfileReorderItem => {
+  return !cp.url && !cp.mount && !cp.unmount && !cp.mountIcon && !cp.unmountIcon && cp.label === 'security';
+};
+
+const sanitizeCustomPageURL = (url: string): string => {
+  if (!url) {
+    throw new Error('URL is required for custom pages');
+  }
+  if (isValidUrl(url)) {
+    throw new Error('Absolute URLs are not supported for custom pages');
+  }
+  return (url as string).charAt(0) === '/' && (url as string).length > 1 ? (url as string).substring(1) : url;
+};
+
+const sanitizeCustomLinkURL = (url: string): string => {
+  if (!url) {
+    throw new Error('URL is required for custom links');
+  }
+  if (isValidUrl(url)) {
+    return url;
+  }
+  return (url as string).charAt(0) === '/' ? url : `/${url}`;
 };
